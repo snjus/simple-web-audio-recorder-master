@@ -47,6 +47,10 @@ header .container{
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script
+			  src="https://code.jquery.com/jquery-3.4.1.min.js"
+			  integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+			  crossorigin="anonymous"></script>
     <script src="https://kit.fontawesome.com/3b2717dea1.js" crossorigin="anonymous"></script>
     
   </head>
@@ -125,11 +129,13 @@ header .container{
 
 	<h3 class="hidecomponent">Recordings</h3>
 	<ol id="recordingsList"></ol>
-  
+    <div id = "serverdata">
+    	<form id="audioform"></form>
+    </div>
   	<!-- inserting these scripts at the end to be able to use all the elements in the DOM -->
+  	
 	<script src="js/WebAudioRecorder.min.js"></script>
 	<script src="https://unpkg.com/wavesurfer.js"></script>
-	<script src="js/app.js"></script>
-
+	<script src="js/app.js"></script> 
   </body>
 </html>

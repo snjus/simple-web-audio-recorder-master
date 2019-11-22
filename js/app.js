@@ -7,7 +7,8 @@ var gumStream; 						//stream from getUserMedia()
 var recorder; 						//WebAudioRecorder object
 var input; 							//MediaStreamAudioSourceNode  we'll be recording
 var encodingType; 					//holds selected encoding for resulting audio (file)
-var encodeAfterRecord = true;       // when to encode
+var encodeAfterRecord = true; 
+var recordingBlob = null;      // when to encode
 
 // shim for AudioContext when it's not avb. 
 var AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -26,6 +27,7 @@ var wavesurfer = WaveSurfer.create({
 //add events to those 2 buttons
 recordButton.addEventListener("click", startRecording);
 stopButton.addEventListener("click", stopRecording);
+registerServerListener();
 
 function startRecording() {
 	console.log("startRecording() called");
@@ -89,6 +91,7 @@ function startRecording() {
 			__log("Encoding complete");
 			createDownloadLink(blob,recorder.encoding);
 			encodingTypeSelect.disabled = false;
+			$('#audioform').trigger('submit');
 		}
 
 		recorder.setOptions({
@@ -147,13 +150,55 @@ function createDownloadLink(blob,encoding) {
 	link.href = url;
 	link.download = new Date().toISOString() + '.'+encoding;
 	link.innerHTML = link.download;
-
+	recordingBlob = blob;
 	//add the new audio and a elements to the li element
 	//li.appendChild(au);
 	li.appendChild(link);
 	wavesurfer.loadBlob(blob);
 	//add the li element to the ordered list
 	recordingsList.appendChild(li);
+}
+
+function registerServerListener(){
+
+
+$("#audioform").submit(function (event) {
+    event.preventDefault();
+
+    var formData = new FormData($(this)[0]);
+
+    if (recordingBlob) {
+        var recording = new Blob([recordingBlob], { type: "audio/wav" });
+        formData.append("recording", recording);
+    }
+
+    $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+
+    $.ajax({
+        url: '/detectlang',
+        type: 'POST',
+        cache : false,
+        data : formData,
+    processData: false,
+    contentType: false,
+    success: function(response) {
+                        if (response === 'success') {
+                            alert('successfully uploaded recorded blob');
+                            console.log('Successfully Uploaded Recorded Blob');
+                        } else
+                        {
+                            alert(response); // error/failure
+                        }
+                    }
+        //etc
+    });
+});
+
+
 }
 
 
